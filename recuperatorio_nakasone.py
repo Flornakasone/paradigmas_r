@@ -16,6 +16,7 @@
 import csv
 import os.path
 
+#funcion para validar numeros enteros
 def validacion_int(str):
     try:
         entero = int(str)
@@ -23,30 +24,32 @@ def validacion_int(str):
     except ValueError:
         return False
 
-def carga_datos(campos):
+#funcion para pedir datos al usuario
+def carga_datos(campos): 
     guardar = "si"
     lista = []
 
     while guardar == "si":
         empleado ={}
         for campo in campos:
-            empleado[campo] = input(f"ingrese {campo} del empleado")
-            if campo == "Legajo":
+            empleado[campo] = input(f"ingrese {campo} del empleado: ")
+            if campo == "Legajo": #validacion legajos llamando a la funcion
                 while validacion_int(empleado[campo]) is False:
-                    print("debe ser un numero entero")
-                    empleado[campo] = input(f"ingrese {campo} del empleado")
+                    print("debe ser un numero entero: ")
+                    empleado[campo] = input(f"ingrese {campo} del empleado: ")
 
         lista.append(empleado)
         guardar = input("desea seguir agregando? si/no: " )    
 
     return lista
 
+#creacion o modificacion de archivo
 def crear_archivo(campos):
     archivo = input("ingrese nombre para el archivo  con extension .csv: ")
 
     try: 
-        archivo_existe = os.path.isfile(archivo)
-        if archivo_existe:
+        archivo_existe = os.path.isfile(archivo) #corroborar si exite archivo
+        if archivo_existe: #modificar archivo existente
             print("Ese archivo ya existe")
             modif_archivo = input("Desea escribir o modificar el archivo?: \n 1. Modificar \n 2. Sobreescribir \n ")
             if modif_archivo == "1":
@@ -57,16 +60,15 @@ def crear_archivo(campos):
                 modo_escritura = "w"
                 encabezado = "si"
         
-        else:
-            print("Se va a crear un archivo nuevo")
+        else:#para crear un archivo nuevo
+            print("Se creo un archivo nuevo") #msj para corroborar en consola
 
             modo_escritura = "w"
             encabezado = "si"
-        print("hola2")
 
-        with open(archivo, modo_escritura, newline='') as f:
+        with open(archivo, modo_escritura) as f:
             entrada_csv = csv.DictWriter(f, fieldnames=campos)
-            print("hola")
+
             
             if encabezado == "si":
                 entrada_csv.writeheader()
@@ -96,8 +98,8 @@ def consultar():
                     legajo_pedido = input("ingrese numero de legajo: ")
             
         
-            gasto = next(viaticos_csv, None) #adelantamos la 1er linea
-            empleado = next(legajos_csv, None)
+            gasto = next(viaticos_csv, None) #lee primer linea
+            empleado = next(legajos_csv, None) 
                     
             while empleado:
                 while empleado and empleado["Legajo"] == legajo_pedido:
@@ -107,13 +109,13 @@ def consultar():
                             total += int(gasto["Gastos"])
                             gasto = next(viaticos_csv, None)
 
-                        gasto = next(viaticos_csv, None)
+                        gasto = next(viaticos_csv, None) 
 
-                    diferencia = 5000 - total
-                    if diferencia < 0:
-                        print(f"Legajo {legajo_pedido}: {empleado['Nombre']},{empleado['Apellido']} gastó {total} y se ha pasado del presupuesto por {-(diferencia)}")
+                    diferencia = 5000 - total 
+                    if diferencia < 0: 
+                        print(f"Legajo {legajo_pedido}: {empleado['Nombre']},{empleado['Apellido']} gastó ${total} y se ha pasado del presupuesto por ${-(diferencia)}") # con (-) para que no quede un numero negativo
                     else:
-                        print(f"Legajo {legajo_pedido}: {empleado['Nombre']},{empleado['Apellido']} gastó {total}")
+                        print(f"Legajo {legajo_pedido}: {empleado['Nombre']},{empleado['Apellido']} gastó ${total}")
 
                     empleado = next(legajos_csv, None)
                 empleado = next(legajos_csv, None)    
@@ -122,14 +124,9 @@ def consultar():
             print("Hubo un error, no se puede visualizar el archivo") 
 
 
-
-
-def menu():
-    CAMPOS = ["Legajo", "Apellido", "Nombre"]
-    
-    while True:
+def imprimir():
         print("-------------------------------")
-        print("Gastos por viaticos")
+        print("RRHH - Gastos por viaticos")
         print("-------------------------------")
         print()
         print("Opciones disponibles:")
@@ -137,6 +134,12 @@ def menu():
         print("2. Calcular Viaticos")
         print("3. Salir")
         print()
+
+def menu():
+    CAMPOS = ["Legajo", "Apellido", "Nombre"]
+    
+    while True:
+        imprimir()
         
         entrada_usuario = int(input("Seleccione una opcion: "))
 
